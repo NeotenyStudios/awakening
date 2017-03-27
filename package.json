@@ -1,0 +1,19 @@
+{
+  "name": "awakening",
+  "version": "0.0.1",
+  "description": "This is the awakening project",
+  "main": "theCatalyst.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NeotenyStudios/awakening.git"
+  },
+  "author": "Maxime GRAS",
+  "license": "SEE LICENSE IN LICENCE",
+  "bugs": {
+    "url": "https://github.com/NeotenyStudios/awakening/issues"
+  },
+  "homepage": "https://github.com/NeotenyStudios/awakening#readme"
+}
