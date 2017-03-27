@@ -1,0 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   design.css                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2017/03/27 18:26:07 by mgras             #+#    #+#             */
+/*   Updated: 2017/03/27 18:41:41 by mgras            ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+body.index {
+	width: 100%;
+	display: block;
+	margin: auto;
+}
+
+body.index #logChoiceWrap {
+	width: 100%;
+	margin: auto;
+	max-width: 1140px;
+	height: 400px;
+	display: block;
+}
+
+body.index #signinChoiceWrap {
+	margin-left: 5%;
+}
+
+body.index .logChoice {
+	width: 45%;
+	padding: 15px;
+	display: inline-block;
+
+}
