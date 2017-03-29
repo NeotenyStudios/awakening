@@ -15,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/NeotenyStudios/awakening/issues"
   },
-  "homepage": "https://github.com/NeotenyStudios/awakening#readme"
+  "homepage": "https://github.com/NeotenyStudios/awakening#readme",
+  "dependencies": {
+    "fs": "0.0.1-security",
+    "http": "0.0.0",
+    "mongodb": "^2.2.25",
+    "path": "^0.12.7"
+  }
 }
