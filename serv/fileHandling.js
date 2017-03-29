@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 15:06:41 by mgras             #+#    #+#             */
-/*   Updated: 2017/03/27 17:43:59 by mgras            ###   ########.fr       */
+/*   Updated: 2017/03/28 13:21:44 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,31 @@ ex['.js'] = function(req, res){
 		else
 		{
 			res.writeHeader(200, {'Content-Type' : 'text/js'});
-			res.end(content)
+			res.end(content);
+		}
+	});
+}
+
+ex['.jpg'] = function(req, res){
+	fs.readFile('./public/medias/jpg/' + path.basename(req.url), (err, content) => {
+		if (err !== null)
+			res.end('Your file was not found or an error occured');
+		else
+		{
+			res.writeHeader(200, {'Content-Type' : 'image/jpg'});
+			res.end(content, 'binary');
+		}
+	});
+}
+
+ex['.png'] = function(req, res){
+	fs.readFile('./public/medias/png/' + path.basename(req.url), (err, content) => {
+		if (err !== null)
+			res.end('Your file was not found or an error occured');
+		else
+		{
+			res.writeHeader(200, {'Content-Type' : 'image/png'});
+			res.end(content, 'binary');
 		}
 	});
 }
@@ -35,7 +59,7 @@ ex['.css'] = function(req, res){
 		else
 		{
 			res.writeHeader(200, {'Content-Type' : 'text/css'});
-			res.end(content)
+			res.end(content);
 		}
 	});
 }
@@ -47,7 +71,7 @@ ex['.html'] = function(req, res){
 		else
 		{
 			res.writeHeader(200, {'Content-Type' : 'text/html'});
-			res.end(content)
+			res.end(content);
 		}
 	});
 }

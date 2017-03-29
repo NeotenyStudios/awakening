@@ -1,24 +1,46 @@
+<!--
+                                                          :::      ::::::::
+     login.html                                         :+:      :+:    :+:
+                                                      +:+ +:+         +:+
+     By: mgras <mgras@student.42.fr>                +#+  +:+       +#+
+                                                  +#+#+#+#+#+   +#+
+     Created: 2017/03/28 13:08:26 by mgras             #+#    #+#
+     Updated: 2017/03/28 18:02:23 by mgras            ###   ########.fr
+-->
+
 <!DOCTYPE HTML>
 <html lang='en'>
 	<head>
 		<meta charset='utf-8'>
 		<title>Awakening - Login</title>
 		<meta name='author' content='NeotenyStudios'>
-		<link rel='stylesheet' href='/deisgn.css'>
-		<link href="https://fonts.googleapis.com/css?family=PT+Sans:700" rel="stylesheet">
+		<link rel='stylesheet' href='/design.css'>
+		<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 		<script type='text/javascript' src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
 	</head>
 	<body class='index'>
 		<header></header>
 		<div id='logChoiceWrap'>
-			<div id='signinChoiceWrap' class="logChoice">
-				
+			<div id='signupChoiceWrap' class='logChoice bounceEasing'>
+				<p class='logText'>Sign In</p>
 			</div>
-			<div id='signupChoiceWrap' class="logChoice">
-				
+			<div id='signinChoiceWrap' class='logChoice bounceEasing'>
+				<p class='logText'>Sign Up</p>
 			</div>
+		</div>
+		<div id='formWrappers'>
+			<div class='signUpForm'>
+				<input type='text' name='email' id='email' class='suInput' placeholder='Email'>
+				<input type='text' name='gametag' id='gametag' class='suInput' placeholder='Gametag'>
+				<input type='text' name='yearOfBirth' id='yearOfBirth' class='suInput' placeholder='Year of Birth (Ex : 1996)'>
+				<input type='password' name='psw' id='psw' class='suInput' placeholder='Password'>
+				<input type='password' name='r_psw' id='r_psw' class='suInput' placeholder='Repeat password'>
+				<div id='valSignup' class='valBut'>Sign me up !</div>
+			</div>
+			<div class='signInForm'></div>
 		</div>
 		<footer></footer>
 	</body>
 	<script src='/controllerLogin.js'></script>
+	<script src='/formVerif.js'></script>
 </html>

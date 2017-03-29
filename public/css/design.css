@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 18:26:07 by mgras             #+#    #+#             */
-/*   Updated: 2017/03/27 18:41:41 by mgras            ###   ########.fr       */
+/*   Updated: 2017/03/28 17:59:52 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,17 +20,99 @@ body.index #logChoiceWrap {
 	width: 100%;
 	margin: auto;
 	max-width: 1140px;
-	height: 400px;
+	height: 75px;
 	display: block;
+	margin-bottom: 20px;
+}
+
+body.index #signupChoiceWrap {
+	margin-left: 5%;
 }
 
 body.index #signinChoiceWrap {
-	margin-left: 5%;
+
 }
 
 body.index .logChoice {
 	width: 45%;
-	padding: 15px;
+	height: 100%;
 	display: inline-block;
+	vertical-align: top;
+	text-align: center;
+	font-family: 'PT Sans';
+	font-size: 20px;
+	overflow: hidden;
+	color: #111;
+	border-bottom: 1px solid #121212;
+	cursor: pointer;
+}
 
+.bounceEasing {
+	transition: 0.2s;
+	-webkit-transition-timing-function: cubic-bezier(0.870, 0, 0.000, 1);
+	-webkit-transition-timing-function: cubic-bezier(0.870, -0.295, 0.000, 1.265);
+	-moz-transition-timing-function: cubic-bezier(0.870, -0.295, 0.000, 1.265);
+	-o-transition-timing-function: cubic-bezier(0.870, -0.295, 0.000, 1.265);
+	transition-timing-function: cubic-bezier(0.870, -0.295, 0.000, 1.265);
+}
+
+body.index .logText {
+	vertical-align: middle;
+}
+
+body.index .signInForm {
+	width: 90%;
+	max-width: 1140px;
+	margin: auto;
+	display: none;
+}
+
+body.index .signUpForm {
+	width: 90%;
+	max-width: 1140px;
+	margin: auto;
+	display: none;
+}
+
+body.index input {
+	width: 90%;
+	margin: auto;
+	display: block;
+	height: 35px;
+	border-radius: 3px;
+	border : 1px solid #121212;
+	padding: 5px 5px 5px 10px;
+	margin-bottom: 5px;
+	font-family: 'PT Sans';
+	font-size: 15px;
+	font-weight: 0;
+}
+
+body.index #formWrappers {
+	width: 90%;
+	margin: auto;
+	max-width: 1140px;
+}
+
+
+
+body.index .valBut {
+	margin: auto;
+	max-width: 200px;
+	height: 35px;
+	border : 1px solid #757575;
+	background-color: #757575;
+	color: #fff;
+	padding-top: 13px;
+	font-family: 'PT Sans';
+	text-align: center;
+	border-radius: 3px;
+	cursor: pointer;
+	transition: 0.5s;
+	margin-top: 20px;
+}
+
+body.index .valBut:hover {
+	background-color: #fff;
+	color: #000;
 }
