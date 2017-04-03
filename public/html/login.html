@@ -5,7 +5,7 @@
      By: mgras <mgras@student.42.fr>                +#+  +:+       +#+
                                                   +#+#+#+#+#+   +#+
      Created: 2017/03/28 13:08:26 by mgras             #+#    #+#
-     Updated: 2017/03/28 18:02:23 by mgras            ###   ########.fr
+     Updated: 2017/04/03 12:51:17 by mgras            ###   ########.fr
 -->
 
 <!DOCTYPE HTML>
@@ -17,27 +17,32 @@
 		<link rel='stylesheet' href='/design.css'>
 		<link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 		<script type='text/javascript' src='https://code.jquery.com/jquery-3.2.1.min.js'></script>
+		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js" integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU=" crossorigin="anonymous"></script>
 	</head>
 	<body class='index'>
 		<header></header>
 		<div id='logChoiceWrap'>
-			<div id='signupChoiceWrap' class='logChoice bounceEasing'>
+			<div id='signinChoiceWrap' class='logChoice bounceEasing'>
 				<p class='logText'>Sign In</p>
 			</div>
-			<div id='signinChoiceWrap' class='logChoice bounceEasing'>
+			<div id='signupChoiceWrap' class='logChoice bounceEasing'>
 				<p class='logText'>Sign Up</p>
 			</div>
 		</div>
 		<div id='formWrappers'>
 			<div class='signUpForm'>
-				<input type='text' name='email' id='email' class='suInput' placeholder='Email'>
-				<input type='text' name='gametag' id='gametag' class='suInput' placeholder='Gametag'>
-				<input type='text' name='yearOfBirth' id='yearOfBirth' class='suInput' placeholder='Year of Birth (Ex : 1996)'>
-				<input type='password' name='psw' id='psw' class='suInput' placeholder='Password'>
-				<input type='password' name='r_psw' id='r_psw' class='suInput' placeholder='Repeat password'>
+				<input type='text' name='email' id='emailUp' class='email suInput' placeholder='Email'>
+				<input type='text' name='gametag' id='gametagUp' class='gametag suInput' placeholder='Gametag'>
+				<input type='password' name='psw' id='pswUp' class='psw suInput' placeholder='Password'>
+				<input type='password' name='r_psw' id='r_pswUp' class='psw suInput' placeholder='Repeat password'>
 				<div id='valSignup' class='valBut'>Sign me up !</div>
+				<div class='signError' id='upError'></div>
 			</div>
-			<div class='signInForm'></div>
+			<div class='signInForm'>
+				<input type='text' name='email' id='emailIn' class='suInput' placeholder='Email'>
+				<input type='password' name='psw' id='pswIn' class='suInput' placeholder='Password'>
+				<div id='valSignin' class='valBut'>Sign me up !</div>
+			</div>
 		</div>
 		<footer></footer>
 	</body>

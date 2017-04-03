@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/01 14:25:56 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/01 16:50:49 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/03 12:47:12 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 const	userManipulation	= require('./userManipulation');
 let		ex					= {};
 
-function handleSignupRequest(req, res, cb) {
+function handleSignupRequest(req, res) {
 	let body = '';
 
 	res.writeHead(200, {'Content-Type' : 'text/plain'});
@@ -72,7 +72,7 @@ function verifSignupInputs(form, cb) {
 		let retValue = true;
 
 		retValue = retValue === false ? false : verifEmail(form.email);
-		retValue = retValue === false ? false : verifStringAlphaNumLength(form.gametag, 6, 14);
+		retValue = retValue === false ? false : verifStringAlphaNumLength(form.gametag, 4, 14);
 		retValue = retValue === false ? false : verifStringLength(form.password, 6, undefined);
 		if (retValue === false)
 			retObj = {errorMsg : 'Field verification test did not pass', code : 2};

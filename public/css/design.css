@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 18:26:07 by mgras             #+#    #+#             */
-/*   Updated: 2017/03/28 17:59:52 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/03 15:24:37 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,10 @@ body.index #logChoiceWrap {
 }
 
 body.index #signupChoiceWrap {
-	margin-left: 5%;
 }
 
 body.index #signinChoiceWrap {
-
+	margin-left: 5%;
 }
 
 body.index .logChoice {
@@ -94,7 +93,13 @@ body.index #formWrappers {
 	max-width: 1140px;
 }
 
-
+.signError {
+	text-align: center;
+	width: 90%;
+	margin: auto;
+	margin-top: 5px;
+	font-family: 'PT Sans'
+}
 
 body.index .valBut {
 	margin: auto;

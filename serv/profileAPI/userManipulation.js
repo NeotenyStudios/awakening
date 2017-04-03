@@ -6,21 +6,18 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/01 14:31:28 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/01 17:34:10 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/03 15:01:31 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 "use strict";
 
 const	MongoClient		= require('mongodb').MongoClient;
-const	encryption		= require('sha.js');
-const	sha512			= encryption('sha512');
+const	sha512			= require('sha512');
 const	awakeningDb		= 'mongodb://localhost:27018/AWAKENING';
 let 	ex				= {};
 
 function addUser(form, cb){
-	const pass = form.password;
-
 	MongoClient.connect(awakeningDb, (err, db) => {
 		db.collection('users').find({'email' : form.email}, {'_id' : 1}).limit(1).toArray((err, emailCheck) => {
 			if (err !== null)
@@ -47,7 +44,7 @@ function addUser(form, cb){
 							form.userId = 0;
 						else
 							form.userId = lastUserId[0].userId + 1;
-						form.password = sha512.update(pass, 'utf-8').digest('hex');
+						form.password = sha512(form.password).toString('hex');
 						db.collection('users').insert(form, (err, resp) => {
 							if (err !== null)
 							{
@@ -76,7 +73,25 @@ function removeUser(form, cb){
 
 }
 
+function findUser(query, limit, cb) {
+	MongoClient.connect(awakeningDb, (err, db) => {
+		if (limit === undefined)
+			limit = {};
+		db.collection('users').find(query, limit).toArray((err, resp) => {
+			cb(err, resp);
+		});
+	});
+}
+
+function hashString(str) {
+	let hash = sha512(str).toString('hex');
+
+	return (hash);
+}
+
 ex.addUser = addUser;
 ex.updateUser = updateUser;
 ex.removeUser = removeUser;
+ex.findUser = findUser;
+ex.hashString = hashString;
 module.exports = ex;
