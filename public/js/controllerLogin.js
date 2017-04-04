@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 17:25:22 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/03 15:23:43 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/03 15:27:00 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ jQuery('document').ready(() => {
 				if (ajaxRet.code === 0)
 				{
 					document.cookie = "awakeningUniqueSessionId=" + ajaxRet.sessionId;
-					self.location.href = self.location.origin + '/awakening.html'
+					self.location.href = self.location.origin + '/awakening.html';
 				}
 			}
 		});

@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 15:06:41 by mgras             #+#    #+#             */
-/*   Updated: 2017/03/28 13:21:44 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/03 18:56:57 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ const	fs		= require('fs');
 let		ex		= {};
 
 ex['.js'] = function(req, res){
-	fs.readFile('./public/js/' + path.basename(req.url), 'utf-8', (err, content) => {
+	fs.readFile('./public/js' + path.dirname(req.url) + '/' + path.basename(req.url), 'utf-8', (err, content) => {
 		if (err !== null)
 			res.end('Your file was not found or an error occured');
 		else
@@ -65,7 +65,7 @@ ex['.css'] = function(req, res){
 }
 
 ex['.html'] = function(req, res){
-	fs.readFile('./public/html/' + path.basename(req.url), 'utf-8', (err, content) => {
+	fs.readFile('./public/html' + path.dirname(req.url) + '/' + path.basename(req.url), 'utf-8', (err, content) => {
 		if (err !== null)
 			res.end('Your file was not found or an error occured');
 		else
