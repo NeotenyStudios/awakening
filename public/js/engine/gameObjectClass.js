@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:45:46 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/04 19:06:32 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/05 17:50:26 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ let gameObject = function (config) {
 		'speedRatio'		: 1 * 1000
 	}
 	this.currentSate = 'default';
-	this.states = {'default' : new AnimationState()};
+	this.states = {};
 	this.image.isReady	= false;
 	this.size			= {
 		'x'	: 0,
@@ -66,18 +66,12 @@ gameObject.prototype.loadImageArray = function(urlArray) {
 }
 
 gameObject.prototype.draw = function (awakening, progress) {
-	const	canvas = awakening.canvas;
-	const	elapsedTime = awakening.elapsedTime;
-	let		image;
+	const stateToDraw = this.states[this.currentSate];
 
-	if (this.image.isAnime === true) {
-		this.image.onFrame = this.getFramePlacement(elapsedTime);
-		image = this.image.files[this.image.onFrame];
-	}
+	if (stateToDraw !== undefined)
+		stateToDraw.draw(this, awakening.canvas);
 	else
-		image = this.image.files[0];
-	if (image !== undefined)
-		canvas.drawImage(image, this.position.x, this.position.y);
+		console.warn('Unexisting state', this);
 }
 
 gameObject.prototype.getFramePlacement = function(elapsedTime) {
@@ -98,6 +92,7 @@ gameObject.prototype.move = function(x, y) {
 	this.position.y = y;
 }
 
-gameObject.prototype.addAnimationState = function(name, state){
-	this.states[name] = new AnimationState(name, {});
+gameObject.prototype.addAnimationState = function(stateName, urlArray) {
+	this.states[stateName] = new AnimationState();
+	this.states[stateName].loadImageUrl(urlArray);
 }

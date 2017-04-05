@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/01 14:25:56 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/03 12:47:12 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/05 17:12:00 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,7 @@ function handleSignupRequest(req, res) {
 				res.end(JSON.stringify({'code' : err.code, 'message' : err.errorMsg}));
 			else
 			{
-				console.log('in else');
 				userManipulation.addUser(form, (err, resp) => {
-					console.log('err :' + err, 'resp :' +  resp);
 					if (err !== null)
 						res.end(JSON.stringify({'code' : 3, 'message' : err}));
 					else

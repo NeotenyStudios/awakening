@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:09:03 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/04 18:20:01 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/05 19:09:11 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ let Awakening = function(config) {
 	this.renderedFrames		= 0;
 	this.lastRenderedFrames	= this.renderedFrames;
 	this.elapsedTime		= 0;
+	this.displayFrameRate	= false;
 }
 
 Awakening.prototype.calculateLogic = function(progress) {
@@ -27,11 +28,14 @@ Awakening.prototype.calculateLogic = function(progress) {
 Awakening.prototype.draw = function(progress) {
 	this.clearCanvas();
 
+	this.forwardAnimationStates(progress);
 	for (let object in this.objects) {
 		this.objects[object].draw(this, progress);
 	}
-	this.canvas.font = '10px Arial';
-	this.canvas.fillText(this.lastRenderedFrames, 10 , 10);
+	if (this.displayFrameRate == true) {
+		this.canvas.font = '10px Arial';
+		this.canvas.fillText(this.lastRenderedFrames, 10 , 10);
+	}
 };
 
 Awakening.prototype.loop = function(timestamp) {
@@ -39,7 +43,7 @@ Awakening.prototype.loop = function(timestamp) {
 
 	this.elapsedTime += progress;
 	this.calculateLogic();
-	this.draw();
+	this.draw(progress);
 	this.lastRender = timestamp;
 	this.renderedFrames++;
 	window.requestAnimationFrame((timestamp) => {this.loop(timestamp)});
@@ -49,19 +53,14 @@ Awakening.prototype.clearCanvas = function() {
 	this.canvas.clearRect(0, 0, this.canvasDOM.width, this.canvasDOM.height);
 }
 
-Awakening.prototype.addObject = function(name, config){
+Awakening.prototype.buildObject = function(name){
 	this.objects[name] = new gameObject();
-	if (config.imageArray)
-		this.objects[name].loadImageArray(config.imageArray);
-	if (config.image)
-		this.objects[name].loadImage(config.image);
 }
 
-Awakening.prototype.buildObject = function(name, config){
-	config = config | {};
-	this.objects[name] = new gameObject();
-	if (config.states !== undefined && typeof config.states === 'object') {
-		for (var state in config.states)
-			this.objects[name].addAnimationState(state, config.states[state]);
+Awakening.prototype.forwardAnimationStates = function(progress) {
+	for (let object in this.objects) {
+		for (let state in this.objects[object].states) {
+			this.objects[object].states[state].elapsedTime += progress;
+		}
 	}
 }
