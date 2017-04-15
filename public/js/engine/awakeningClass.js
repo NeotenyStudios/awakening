@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:09:03 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/05 19:09:11 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/07 19:21:45 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,18 @@ let Awakening = function(config) {
 	this.renderedFrames		= 0;
 	this.lastRenderedFrames	= this.renderedFrames;
 	this.elapsedTime		= 0;
-	this.displayFrameRate	= false;
+	this.displayFrameRate	= true;
 }
 
 Awakening.prototype.calculateLogic = function(progress) {
-
+	for (let object in this.objects) {
+		this.objects[object].calculateCollisions(this);
+		if (this.objects[object].isGravityBound === true){
+			this.objects[object].calculateGravity();
+			this.objects[object].modulateSpeed();
+			this.objects[object].resolvePosition();
+		}
+	}
 };
 
 Awakening.prototype.draw = function(progress) {
@@ -54,7 +61,7 @@ Awakening.prototype.clearCanvas = function() {
 }
 
 Awakening.prototype.buildObject = function(name){
-	this.objects[name] = new gameObject();
+	this.objects[name] = new gameObject({'name' : name});
 }
 
 Awakening.prototype.forwardAnimationStates = function(progress) {
