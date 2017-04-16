@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/03 15:30:32 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/07 19:16:00 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/16 13:32:58 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ $(document).ready(() => {
 	player = awakening.objects.player;
 	player.addAnimationState('default', ['/0.png', '/1.png', '/2.png', '/3.png', '/4.png', '/5.png', '/6.png', '/7.png']);
 	player.move(300, 0);
-	player.isGravityBound = false;
+	player.isGravityBound = true;
 	player.setSize(150, 300);
 	player.addCollisionBox('body');
 	

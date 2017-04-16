@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:45:46 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/07 19:21:55 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/16 14:11:44 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ let gameObject = function (config) {
 	this.collisionBoxes = {};
 	this.name			= config.name;
 	this.debug			= {
-		'collisionBox' : true,
+		'collisionBox' : false,
 	}
 }
 
@@ -54,9 +54,9 @@ gameObject.prototype.setSize = function(width, height) {
 }
 
 gameObject.prototype.calculateGravity = function() {
-	this.acceleration.y -= this.weight;
-	this.acceleration.y = this.acceleration.y >= 10 ? 10 : this.acceleration.y;
-	this.acceleration.y = this.acceleration.y <= -10 ? -10 : this.acceleration.y
+	this.acceleration.y -= this.weight / 100;
+	this.acceleration.y = this.acceleration.y >= 20 ? 20 : this.acceleration.y;
+	this.acceleration.y = this.acceleration.y <= -20 ? -20 : this.acceleration.y
 }
 
 gameObject.prototype.modulateSpeed = function() {
@@ -95,7 +95,7 @@ gameObject.prototype.loadImageArray = function(urlArray) {
 gameObject.prototype.calculateCollisions = function (awakening) {
 	for (let collisionBox in this.collisionBoxes) {
 		this.collisionBoxes[collisionBox].checkForCollision();
-		if (this.debug === true)
+		if (this.debug.collisionBox === true)
 			this.collisionBoxes[collisionBox].drawDebugLines(awakening.canvas);
 	}
 }

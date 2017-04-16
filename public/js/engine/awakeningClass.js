@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:09:03 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/07 19:21:45 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/16 12:57:37 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ Awakening.prototype.calculateLogic = function(progress) {
 };
 
 Awakening.prototype.draw = function(progress) {
-	this.clearCanvas();
-
 	this.forwardAnimationStates(progress);
 	for (let object in this.objects) {
 		this.objects[object].draw(this, progress);
@@ -49,6 +47,7 @@ Awakening.prototype.loop = function(timestamp) {
 	const progress = timestamp - this.lastRender;
 
 	this.elapsedTime += progress;
+	this.clearCanvas();
 	this.calculateLogic();
 	this.draw(progress);
 	this.lastRender = timestamp;
