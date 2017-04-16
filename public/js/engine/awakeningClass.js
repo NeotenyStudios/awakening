@@ -6,11 +6,12 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:09:03 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/16 12:57:37 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/16 16:58:46 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 let Awakening = function(config) {
+	console.log(config);
 	this.canvasDOM			= initCanvas(config.width, config.height);
 	this.canvas				= this.canvasDOM.getContext('2d');
 	this.lastRender			= 0;
@@ -23,12 +24,13 @@ let Awakening = function(config) {
 
 Awakening.prototype.calculateLogic = function(progress) {
 	for (let object in this.objects) {
-		this.objects[object].calculateCollisions(this);
 		if (this.objects[object].isGravityBound === true){
 			this.objects[object].calculateGravity();
 			this.objects[object].modulateSpeed();
 			this.objects[object].resolvePosition();
 		}
+		this.objects[object].calculateCollisions(this);
+		this.objects[object].calculateFrictionBrake();
 	}
 };
 

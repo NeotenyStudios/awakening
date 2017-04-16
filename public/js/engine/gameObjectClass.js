@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:45:46 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/16 14:11:44 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/16 18:56:39 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ let gameObject = function (config) {
 	}
 	this.layer			= 0;
 	this.weight			= 1;
+	this.friction		= 0.5;
+	this.frictionTreshold = 1;
 	this.isGravityBound = false;
 	this.collisionBoxes = {};
 	this.name			= config.name;
@@ -53,20 +55,45 @@ gameObject.prototype.setSize = function(width, height) {
 	this.size.y = height;
 }
 
+gameObject.prototype.setSpeed = function(x, y) {
+	this.speed.x = x;
+	this.speed.y = y;
+}
+
 gameObject.prototype.calculateGravity = function() {
 	this.acceleration.y -= this.weight / 100;
 	this.acceleration.y = this.acceleration.y >= 20 ? 20 : this.acceleration.y;
 	this.acceleration.y = this.acceleration.y <= -20 ? -20 : this.acceleration.y
 }
 
+gameObject.prototype.calculateFrictionBrake = function () {
+	if (this.speed.x > 0)
+	{
+		this.speed.x -= this.speed.x * (this.friction / 100)
+		if (this.speed.x < this.frictionTreshold)
+			this.speed.x = 0;
+	}
+	else
+	{
+		this.speed.x += this.speed.x * (this.friction / 100)
+		if (this.speed.x > -this.frictionTreshold)
+			this.speed.x = 0;
+	}
+}
+
 gameObject.prototype.modulateSpeed = function() {
 	this.speed.y += this.acceleration.y;
 	this.speed.y = this.speed.y > 50 ? 50 : this.speed.y;
 	this.speed.y = this.speed.y < -50 ? -50 : this.speed.y;
+
+	this.speed.x += this.acceleration.x;
+	this.speed.x = this.speed.x > 50 ? 50 : this.speed.x;
+	this.speed.x = this.speed.x < -50 ? -50 : this.speed.x;
 }
 
 gameObject.prototype.resolvePosition = function() {
 	this.position.y -= this.speed.y;
+	this.position.x += this.speed.x;
 }
 
 gameObject.prototype.loadImage = function(url) {
@@ -105,8 +132,6 @@ gameObject.prototype.draw = function (awakening, progress) {
 
 	if (stateToDraw !== undefined)
 		stateToDraw.draw(this, awakening.canvas);
-	else
-		console.warn('Unexisting state', this);
 }
 
 gameObject.prototype.getFramePlacement = function(elapsedTime) {
