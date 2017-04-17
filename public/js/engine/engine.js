@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/03 15:30:32 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/16 18:35:23 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/17 17:54:15 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,20 +31,55 @@ $(document).ready(() => {
 	setInterval(() => {
 		let player;
 
-		if (playerNb < 5)
+		if (playerNb < 150)
 		{
 			awakening.buildObject('player' + playerNb);
 			player = awakening.objects['player' + playerNb];
 			playerNb++;
-			player.setSize(Math.floor(Math.random() * 80) + 50, Math.floor(Math.random() * 80) + 50);
+			player.setSize(Math.floor(Math.random() * 10) + 5, Math.floor(Math.random() * 10) + 5);
 			//player.addAnimationState('default', ['/0.png', '/1.png', '/2.png', '/3.png', '/4.png', '/5.png', '/6.png', '/7.png']);
-			player.move(1200, 450);
+			player.move(1600, 50);
 			player.isGravityBound = true;
-			player.setSpeed(Math.floor(Math.random() * -20) + -10 , Math.floor(Math.random() * 5) + 1);
+			player.setSpeed(Math.floor(Math.random() * -50) + -10, Math.floor(Math.random() * -30) + -20);
 			player.debug.collisionBox = true;
 			player.addCollisionBox('body');
 		}
-	}, 500)
+	}, 100)
+
+	setInterval(() => {
+		let player;
+
+		if (playerNb < 150)
+		{
+			awakening.buildObject('player' + playerNb);
+			player = awakening.objects['player' + playerNb];
+			playerNb++;
+			player.setSize(Math.floor(Math.random() * 10) + 5, Math.floor(Math.random() * 10) + 5);
+			//player.addAnimationState('default', ['/0.png', '/1.png', '/2.png', '/3.png', '/4.png', '/5.png', '/6.png', '/7.png']);
+			player.move(300, 50);
+			player.isGravityBound = true;
+			player.setSpeed(Math.floor(Math.random() * 50) + 10, Math.floor(Math.random() * -30) + -20);
+			player.debug.collisionBox = true;
+			player.addCollisionBox('body');
+		}
+	}, 100)
+
+	awakening.buildObject('playerX');
+	playerX = awakening.objects['playerX'];
+	playerX.setSize(150, 50);
+	playerX.move(900, 600);
+	playerX.isGravityBound = true;
+	playerX.debug.collisionBox = true;
+	playerX.addCollisionBox('body');
+
+	awakening.buildObject('playerY');
+	playerY = awakening.objects['playerY'];
+	playerY.setSize(50, 50);
+	playerY.move(1500, 450);
+	playerY.isGravityBound = true;
+	playerY.setSpeed(-50 , 5);
+	playerY.debug.collisionBox = true;
+	playerY.addCollisionBox('body');
 
 	awakening.buildObject('block');
 	rest = awakening.objects.block;
