@@ -6,24 +6,12 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:45:46 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/17 17:40:49 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/18 18:44:11 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 let gameObject = function (config) {
-	this.oldPosition	= {
-		x : 0,
-		y : 0		
-	}
 	this.position		= {
-		x : 0,
-		y : 0
-	}
-	this.speed			= {
-		x : 0,
-		y : 0
-	}
-	this.acceleration	= {
 		x : 0,
 		y : 0
 	}
@@ -35,19 +23,13 @@ let gameObject = function (config) {
 		'y'	: 0
 	}
 	this.layer			= 0;
-	this.weight			= 2;
-	this.friction		= 0.2;
-	this.frictionTreshold = {
-		x : 1,
-		y : 0.2
-	}
-	this.isGravityBound = false;
-	this.collisionBoxes = {};
 	this.name			= config.name;
 	this.debug			= {
 		'collisionBox' : false,
+		'rigidBody' : true,
 	}
-	this.engine			= null;
+	this.engine			= config.engine || null;
+	this.rigidBody		= null;
 }
 
 gameObject.prototype.setSize = function(width, height) {
@@ -56,58 +38,13 @@ gameObject.prototype.setSize = function(width, height) {
 }
 
 gameObject.prototype.setSpeed = function(x, y) {
-	this.speed.x = x;
-	this.speed.y = y;
+	if (this.rigidBody)
+		this.rigidBody.setVelocity(x, y);
 }
 
-gameObject.prototype.calculateGravity = function() {
-	this.acceleration.y -= this.weight / 100;
-	this.acceleration.y = this.acceleration.y >= 20 ? 20 : this.acceleration.y;
-	this.acceleration.y = this.acceleration.y <= -20 ? -20 : this.acceleration.y
-}
-
-gameObject.prototype.calculateFrictionBrake = function () {
-	if (this.speed.x > 0)
-	{
-		this.speed.x -= this.speed.x * (this.friction / 100)
-		if (this.speed.x < this.frictionTreshold.x)
-			this.speed.x = 0;
-	}
-	else if (this.speed.x < 0)
-	{
-		this.speed.x += this.speed.x * (-this.friction / 100)
-		if (this.speed.x > -this.frictionTreshold.x)
-			this.speed.x = 0;
-	}
-	if (this.speed.y > 0)
-	{
-		this.speed.y -= this.speed.y * (this.friction / 100)
-		if (this.speed.y < this.frictionTreshold.y)
-			this.speed.y = 0;
-	}
-	else if (this.speed.y < 0)
-	{
-		this.speed.y += this.speed.y * (-this.friction / 100)
-		if (this.speed.y > -this.frictionTreshold.y)
-			this.speed.y = 0;
-	}
-}
-
-gameObject.prototype.modulateSpeed = function() {
-	this.speed.y += this.acceleration.y;
-	this.speed.y = this.speed.y > 50 ? 50 : this.speed.y;
-	this.speed.y = this.speed.y < -50 ? -50 : this.speed.y;
-
-	this.speed.x += this.acceleration.x;
-	this.speed.x = this.speed.x > 50 ? 50 : this.speed.x;
-	this.speed.x = this.speed.x < -50 ? -50 : this.speed.x;
-}
-
-gameObject.prototype.resolvePosition = function() {
-	this.oldPosition.x = this.position.x;
-	this.oldPosition.y = this.position.y;
-	this.position.y -= this.speed.y;
-	this.position.x += this.speed.x;
+gameObject.prototype.checkRigidBodyCollision = function(rB) {
+	if (this.rigidBody && rB)
+		this.rigidBody.checkCollision(rB);
 }
 
 gameObject.prototype.loadImage = function(url) {
@@ -133,25 +70,14 @@ gameObject.prototype.loadImageArray = function(urlArray) {
 	}
 }
 
-gameObject.prototype.calculateCollisions = function (awakening) {
-	for (let collisionBox in this.collisionBoxes) {
-		this.collisionBoxes[collisionBox].checkForCollision();
-		this.collisionBoxes[collisionBox].checkForCollision();
-		if (this.debug.collisionBox === true)
-			this.collisionBoxes[collisionBox].drawDebugLines(awakening.canvas);
-	}
-}
-
-gameObject.prototype.dumpCurrentTickCollisionScans = function () {
-	for (let collisionBox in this.collisionBoxes)
-		this.collisionBoxes[collisionBox].currentTickScan = [];
-}
-
 gameObject.prototype.draw = function (awakening, progress) {
 	const stateToDraw = this.states[this.currentSate];
 
 	if (stateToDraw !== undefined)
 		stateToDraw.draw(this, awakening.canvas);
+	if (this.rigidBody !== null) {
+		this.rigidBody.drawDebug(this.debug.rigidBody, awakening.canvas);
+	}
 }
 
 gameObject.prototype.getFramePlacement = function(elapsedTime) {
@@ -167,11 +93,17 @@ gameObject.prototype.getFramePlacement = function(elapsedTime) {
 		return (roundedFramePos);
 }
 
+gameObject.prototype.updateRigidBody = function() {
+	if (this.rigidBody)
+		this.rigidBody.update();
+}
+
 gameObject.prototype.move = function(x, y) {
-	this.oldPosition.x = this.position.x;
-	this.oldPosition.y = this.position.y;
 	this.position.x = x;
 	this.position.y = y;
+	if (this.rigidBody !== null) {
+		this.rigidBody.move(x, y);
+	}
 }
 
 gameObject.prototype.addAnimationState = function(stateName, urlArray) {
@@ -179,12 +111,6 @@ gameObject.prototype.addAnimationState = function(stateName, urlArray) {
 	this.states[stateName].loadImageUrl(urlArray);
 }
 
-gameObject.prototype.addCollisionBox = function(name, config) {
-	let holder;
-
-	config = config === undefined ? {} : config;
-	if (config.name === undefined)
-		config.name = name;
-	holder = new CollisionBox(this, config)
-	this.collisionBoxes[holder.name] = holder;
+gameObject.prototype.addRigidBody = function(config) {
+	this.rigidBody = new RigidBody(this, config);
 }

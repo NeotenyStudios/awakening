@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:09:03 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/17 17:28:11 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/18 19:41:53 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,19 @@ let Awakening = function(config) {
 	this.lastRenderedFrames	= this.renderedFrames;
 	this.elapsedTime		= 0;
 	this.displayFrameRate	= true;
-	this.globalCollisionBox	= {};
-	this.globalHitBox		= {};
+	this.objNb				= 0;
 }
 
 Awakening.prototype.calculateLogic = function(progress) {
 	for (let object in this.objects) {
-		if (this.objects[object].isGravityBound === true){
-			this.objects[object].calculateGravity();
-			this.objects[object].modulateSpeed();
-			this.objects[object].resolvePosition();
+		const stamp = object;
+
+		this.objects[object].updateRigidBody();
+		for (let rB in this.objects)
+		{
+			if (rB != stamp)
+				this.objects[object].checkRigidBodyCollision(this.objects[rB].rigidBody);
 		}
-		this.objects[object].calculateCollisions(this);
-		this.objects[object].calculateFrictionBrake();
 	}
 };
 
@@ -42,8 +42,8 @@ Awakening.prototype.draw = function(progress) {
 		this.objects[object].draw(this, progress);
 	}
 	if (this.displayFrameRate == true) {
-		this.canvas.font = '10px Arial';
-		this.canvas.fillText(this.lastRenderedFrames, 10 , 10);
+		this.canvas.font = '20px Arial';
+		this.canvas.fillText(this.lastRenderedFrames, 25 , 25);
 	}
 };
 
@@ -52,7 +52,7 @@ Awakening.prototype.loop = function(timestamp) {
 
 	this.elapsedTime += progress;
 	this.clearCanvas();
-	this.calculateLogic();
+	this.calculateLogic(progress);
 	this.draw(progress);
 	this.lastRender = timestamp;
 	this.renderedFrames++;
@@ -66,6 +66,7 @@ Awakening.prototype.clearCanvas = function() {
 Awakening.prototype.buildObject = function(name){
 	this.objects[name] = new gameObject({'name' : name});
 	this.objects[name].engine = this;
+	this.objNb++;
 }
 
 Awakening.prototype.forwardAnimationStates = function(progress) {
