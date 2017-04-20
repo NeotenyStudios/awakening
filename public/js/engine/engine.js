@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/03 15:30:32 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/18 19:40:56 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/20 15:46:08 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ let awakening;
 $(document).ready(() => {
 	awakening = new Awakening({
 		'width' : 1920,
-		'heightheight': 1080,
+		'height': 1080,
 	});
 
 	setInterval(() => {
@@ -28,27 +28,63 @@ $(document).ready(() => {
 	}, 1000);
 
 	let blockL = 0;
+	let blockX = 0;
 	let blockR = 0;
 
-	setInterval(() => {
-		awakening.buildObject('blockL' + blockL, {'engine' : this});
-		rest = awakening.objects['blockL' + blockL];
-		blockL++;
-		rest.move(1500, 450);
-		rest.setSize(gMM(20, 25), gMM(20, 25));
-		rest.addRigidBody();
-		rest.setSpeed(gMM(-10, 5), gMM(0.2, 0.5));
-	}, 150)
+	awakening.buildObject('bottomBlock', {'engine' : this});
+	awakening.buildObject('topBlock', {'engine' : this});
+	awakening.buildObject('leftBlock', {'engine' : this});
+	awakening.buildObject('rightBlock', {'engine' : this});
 
 	setInterval(() => {
-		awakening.buildObject('blockR' + blockR, {'engine' : this});
-		rest = awakening.objects['blockR' + blockR];
-		blockR++;
-		rest.move(50, 450);
-		rest.setSize(gMM(20, 25), gMM(20, 25));
-		rest.addRigidBody();
-		rest.setSpeed(gMM(10, 5), gMM(0.2, 0.5));
-	}, 150)
+		if (awakening.objNb < 250)
+		{
+			awakening.buildObject('blockL' + blockL, {'engine' : this});
+			rest = awakening.objects['blockL' + blockL];
+			blockL++;
+			rest.move(40, 455);
+			rest.setSize(gMM(20, 25), gMM(20, 25));
+			rest.addRigidBody();
+			rest.setSpeed(gMM(10, 5), 2);
+		}
+	}, 250);
+
+	setInterval(() => {
+		if (awakening.objNb < 250)
+		{
+			awakening.buildObject('blockX' + blockX, {'engine' : this});
+			rest = awakening.objects['blockX' + blockX];
+			blockX++;
+			rest.move(1500, 450);
+			rest.setSize(gMM(20, 25), gMM(20, 25));
+			rest.addRigidBody();
+			rest.setSpeed(gMM(-10, 5), 2);
+		}
+	}, 250);
+
+	let bottomBlock = awakening.objects.bottomBlock;
+	bottomBlock.move(0, 1000);
+	bottomBlock.setSize(1920, 50);
+	bottomBlock.addRigidBody();
+	bottomBlock.rigidBody.setMass(0);
+
+	let topBlock = awakening.objects.topBlock;
+	topBlock.move(0, 50);
+	topBlock.setSize(1920, 50);
+	topBlock.addRigidBody();
+	topBlock.rigidBody.setMass(0);
+
+	let leftBlock = awakening.objects.leftBlock;
+	leftBlock.move(0, 101);
+	leftBlock.setSize(50, 890);
+	leftBlock.addRigidBody();
+	leftBlock.rigidBody.setMass(0);
+
+	let rightBlock = awakening.objects.rightBlock;
+	rightBlock.move(1800, 101);
+	rightBlock.setSize(50, 890);
+	rightBlock.addRigidBody();
+	rightBlock.rigidBody.setMass(0);
 
 	window.requestAnimationFrame((timestamp) => {awakening.loop(timestamp)});
 });

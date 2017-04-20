@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/18 13:23:30 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/18 19:46:19 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/20 15:28:35 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,18 @@ let RigidBody = function(parentGameObject, config) {
 		x : 0,
 		y : 0
 	});
-	this.bounce = 1;
-	this.mass = 100;
-	this.invmass = 1/100;
+	this.bounce = 0.2;
+	this.mass = gMM(1000, 1500);
+	this.invmass = 1 / this.mass;
+	this.debugColor = '#000'
+	this.gravity = true;
 }
 
-RigidBody.setMass = function(newMass) {
+RigidBody.prototype.setBounce = function(newBounce) {
+	this.bounce = newBounce;
+}
+
+RigidBody.prototype.setMass = function(newMass) {
 	this.mass = newMass;
 	if (newMass == 0)
 		this.invmass = 0;
@@ -55,41 +61,48 @@ RigidBody.prototype.cmpAxisAlignedBoundingBox = function(b) {
 
 	if (a.max.x < b.min.x || a.min.x > b.max.x)
 		return (false);
-	if (a.max.y < b.min.y || a.min.y > b.max.y)
+	else if (a.max.y < b.min.y || a.min.y > b.max.y)
 		return (false);
-	return (true);
+	else
+		return (true);
 }
 
 RigidBody.prototype.overlapAABB = function(b) {
-	const	normal		= new Vector({x : b.x - this.a, y : b.y - this.y});
-	let		aExtent		= (this.axisAlignedBoundingBox.max.x - this.axisAlignedBoundingBox.min.y) / 2;
-	let		bExtent		= (b.axisAlignedBoundingBox.max.x - b.axisAlignedBoundingBox.min.y) / 2;
-	const	xOverlap	= aExtent + bExtent - Math.abs(normal.x);
-	let		yOverlap;
-	let		manifold	= new Manifold();
+	let normal = new Vector({
+		x : b.position.x - this.position.x,
+		y : b.position.y - this.position.y
+	});
+	let aExtent = (this.axisAlignedBoundingBox.max.x - this.axisAlignedBoundingBox.min.x);
+	let bExtent = (b.axisAlignedBoundingBox.max.x - b.axisAlignedBoundingBox.min.x);
+	let xOverlap = aExtent + bExtent - Math.abs(normal.x);
+	let yOverlap;
+	let manifold = new Manifold();
 
-	if (xOverlap > 0)
+	if (xOverlap >= 0)
 	{
-		aExtent = (this.axisAlignedBoundingBox.max.y - this.axisAlignedBoundingBox.min.y) / 2;
-		bExtent = (b.axisAlignedBoundingBox.max.y - b.axisAlignedBoundingBox.min.y) / 2;
+		aExtent = (this.axisAlignedBoundingBox.max.y - this.axisAlignedBoundingBox.min.y);
+		bExtent = (b.axisAlignedBoundingBox.max.y - b.axisAlignedBoundingBox.min.y);
 		yOverlap = aExtent + bExtent - Math.abs(normal.y);
 		if (yOverlap > 0)
 		{
 			if (xOverlap < yOverlap)
-				manifold.normal = new Vector({x : -1, y : 0});
+			{
+				if (normal.x < 0)
+					manifold.normal = new Vector({x : -1, y : 0});
+				else
+					manifold.normal = new Vector({x : 1, y : 0});
+				manifold.penetration = xOverlap;
+				return (manifold);
+			}
 			else
-				manifold.normal = new Vector({x : 1, y : 0});
-			manifold.penetration = xOverlap;
-			return (manifold);
-		}
-		else
-		{
-			if (xOverlap < yOverlap)
-				manifold.normal = new Vector({x : 0, y : -1});
-			else
-				manifold.normal = new Vector({x : 0, y : 1});
-			manifold.penetration = yOverlap;
-			return (manifold);
+			{
+				if (normal.y < 0)
+					manifold.normal = new Vector({x : 0, y : -1});
+				else
+					manifold.normal = new Vector({x : 0, y : 1});
+				manifold.penetration = yOverlap;
+				return (manifold);
+			}
 		}
 	}
 	return (null);
@@ -106,7 +119,7 @@ RigidBody.prototype.move = function(x, y) {
 
 RigidBody.prototype.drawDebug = function(permission, canvas) {
 	if (permission === true) {
-		canvas.strokeStyle="#111";
+		canvas.strokeStyle= this.debugColor;
 		canvas.lineWidth = 1;
 		canvas.beginPath();
 
@@ -159,47 +172,33 @@ RigidBody.prototype.resolveCollision = function(b, manifold) {
 	let		impulse = new Vector();
 	let		e;
 	let		j;
-	let		c;
-	let		percent = 0.20;
-	let		slop = 0.01;
+	let		cX;
+	let		cY;
+	let		percent = 0.05;
+	let		slop = 0.1;
 
-	if (velAlongNormal > 0)	//Separation
+	if (velAlongNormal > 0){
+		this.debugColor = '#4CAF50';
 		return (null);
-	e = Math.min(this.bounce, b.bounce);
-	j = -(1 + e);
-	j /= (this.invmass + b.invmass);
-	impulse.set(manifold.normal.x * j, manifold.normal.y * j);
-	this.resolveVelocity(impulse, true);
-	b.resolveVelocity(impulse, false);
-	c = Math.max(manifold.penetration - slop, 0) / (this.invmass + b.invmass) * percent * manifold.normal.x * manifold.normal.y;
-	this.position.x -= this.invmass * c;
-	this.position.y -= this.invmass * c;
-	b.position.x += b.invmass * c;
-	b.position.y += b.invmass * c;
-}
-
-RigidBody.prototype.resolveVelocity = function(impulse, isCh) {
-	const oldVelX = this.velocity.x > 0;
-	const oldVelY = this.velocity.y > 0;
-
-	if (isCh === true)
-	{
-		this.velocity.x += (this.invmass * impulse.x);
-		this.velocity.y += (this.invmass * impulse.y);
 	}
 	else
 	{
+		e = Math.min(this.bounce, b.bounce);
+		j = -(1 + e) * velAlongNormal;
+		j /= this.invmass + b.invmass;
+		impulse.x = manifold.normal.x * j;
+		impulse.y = manifold.normal.y * j;
 		this.velocity.x -= (this.invmass * impulse.x);
 		this.velocity.y -= (this.invmass * impulse.y);
-	}	
-	// if (this.velocity.x > 0 && oldVelX === true)
-	// 	this.velocity.x *= -1;
-	// if (this.velocity.x < 0 && oldVelX === false)
-	// 	this.velocity.x *= -1;
-	// if (this.velocity.y > 0 && oldVelY === true)
-	// 	this.velocity.y *= -1;
-	// if (this.velocity.y < 0 && oldVelY === false)
-	// 	this.velocity.y *= -1;
+		b.velocity.x += (b.invmass * impulse.x);
+		b.velocity.y += (b.invmass * impulse.y);
+		cX = Math.max(manifold.penetration - slop, 0) / (this.invmass + b.invmass) * manifold.normal.x * percent;
+		cY = Math.max(manifold.penetration - slop, 0) / (this.invmass + b.invmass) * manifold.normal.y * percent;
+		this.position.x -= this.invmass * cX;
+		this.position.y -= this.invmass * cY;
+		b.position.x += b.invmass * cX;
+		b.position.y += b.invmass * cY;
+	}
 }
 
 RigidBody.prototype.checkCollision = function(b) {
@@ -207,8 +206,16 @@ RigidBody.prototype.checkCollision = function(b) {
 
 	if (this.cmpAxisAlignedBoundingBox(b))
 	{
+		this.debugColor = '#F44336';
 		manifold = this.overlapAABB(b);
 		if (manifold !== null)
+		{
+			this.debugColor = '#000';
 			this.resolveCollision(b, manifold);
+		}
+		else
+			this.debugColor = '#4CAF50';
 	}
+	else
+		this.debugColor = '#4CAF50';
 }

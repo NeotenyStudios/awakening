@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:45:46 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/18 18:44:11 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/20 15:28:45 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ let gameObject = function (config) {
 gameObject.prototype.setSize = function(width, height) {
 	this.size.x = width;
 	this.size.y = height;
+	if (this.rigidBody !== null && this.rigidBody !== undefined)
+	{
+		this.rigidBody.width = width;
+		this.rigidBody.height = height;
+	}
 }
 
 gameObject.prototype.setSpeed = function(x, y) {
@@ -42,9 +47,12 @@ gameObject.prototype.setSpeed = function(x, y) {
 		this.rigidBody.setVelocity(x, y);
 }
 
-gameObject.prototype.checkRigidBodyCollision = function(rB) {
+gameObject.prototype.resolveRigidBody = function(rB) {
 	if (this.rigidBody && rB)
+	{
 		this.rigidBody.checkCollision(rB);
+		this.rigidBody.checkCollision(rB);
+	}
 }
 
 gameObject.prototype.loadImage = function(url) {

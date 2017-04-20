@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/04 13:09:03 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/18 19:41:53 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/20 14:36:38 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ let Awakening = function(config) {
 	this.lastRenderedFrames	= this.renderedFrames;
 	this.elapsedTime		= 0;
 	this.displayFrameRate	= true;
+	this.displayObjCount	= true;
 	this.objNb				= 0;
 }
 
@@ -31,7 +32,7 @@ Awakening.prototype.calculateLogic = function(progress) {
 		for (let rB in this.objects)
 		{
 			if (rB != stamp)
-				this.objects[object].checkRigidBodyCollision(this.objects[rB].rigidBody);
+				this.objects[object].resolveRigidBody(this.objects[rB].rigidBody);
 		}
 	}
 };
@@ -44,6 +45,10 @@ Awakening.prototype.draw = function(progress) {
 	if (this.displayFrameRate == true) {
 		this.canvas.font = '20px Arial';
 		this.canvas.fillText(this.lastRenderedFrames, 25 , 25);
+	}
+	if (this.displayObjCount == true) {
+		this.canvas.font = '20px Arial';
+		this.canvas.fillText(this.objNb.toString(), 75 , 25);
 	}
 };
 

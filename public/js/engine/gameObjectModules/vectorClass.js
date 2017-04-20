@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/18 13:18:39 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/18 18:37:31 by mgras            ###   ########.fr       */
+/*   Updated: 2017/04/20 12:31:51 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,10 @@ let Vector = function(config) {
 
 Vector.prototype.dotProduct = function(v) {
 	return(this.x * v.x + this.y * v.y);
+}
+
+Vector.prototype.crossProduct = function(v) {
+	return(this.x * v.x - this.y * v.y);
 }
 
 Vector.prototype.add = function(v) {
