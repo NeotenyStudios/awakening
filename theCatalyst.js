@@ -46,6 +46,8 @@ const server			= http.createServer((req, res) => {
 			fileHandling.sendFile(req, res, './public/html/login.html', 'text/html');
 		else if (fileHandling[path.extname(req.url)] !== undefined)
 			fileHandling[path.extname(req.url)](req, res);
+		else
+			fileHandling.sendFile(req, res, './public/html/login.html', 'text/html');
 	});
 }).listen(mainPort);
 
