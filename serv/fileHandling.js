@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   fileHandling.js                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
+/*   By: anonymous <anonymous@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 15:06:41 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/03 18:56:57 by mgras            ###   ########.fr       */
+/*   Updated: 2017/05/22 22:59:30 by anonymous        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ ex['.jpg'] = function(req, res){
 }
 
 ex['.png'] = function(req, res){
-	fs.readFile('./public/medias/png/' + path.basename(req.url), (err, content) => {
+	fs.readFile('./public/medias/png' + path.dirname(req.url) + '/' + path.basename(req.url), (err, content) => {
 		if (err !== null)
 			res.end('Your file was not found or an error occured');
 		else
