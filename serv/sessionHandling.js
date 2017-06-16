@@ -42,7 +42,7 @@ ex.getSessionFromSessionId = function(liveSessionsArray, sessionId) {
 }
 
 ex.getSessionIdFromUserId = function(liveSessionsArray, userId) {
-	for (var session in liveSessionsArray) {
+	for (let session in liveSessionsArray) {
 		if (liveSessionsArray[session].userId === userId)
 			return (session);
 	}
