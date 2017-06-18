@@ -6,16 +6,19 @@
 /*   By: anonymous <anonymous@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:21:52 by anonymous         #+#    #+#             */
-/*   Updated: 2017/06/16 16:59:55 by anonymous        ###   ########.fr       */
+/*   Updated: 2017/06/18 21:52:01 by anonymous        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 function pieroReleaseForwardSmash(piero, gamepad) {
 	piero.config.holdingForwardSmash = false;
+	piero.config.forwardSmashDmgRelease = true;
 	piero.appendAnimationToObjectQueue('body', 'forwardSmash1', function(contextedObject) {
 		console.log('forwardSmash1 END');
+		piero.config.forwardSmashDmgRelease = false;
 	});
 	piero.appendAnimationToObjectQueue('body', 'forwardSmash2', function(contextedObject) {
+		piero.config.forwardSmashHitTicks = 0;
 		console.log('forwardSmash2 END');
 		piero.config.canInputAttacks = true;
 		piero.config.isForwardSmashing = false;
@@ -23,6 +26,7 @@ function pieroReleaseForwardSmash(piero, gamepad) {
 		piero.config.forwardSmash1 = false;
 		piero.config.forwardSmash2 = false;
 		piero.config.forwardSmashEnd = false;
+		piero.config.forwardSmashDmgRelease = false;
 		if (piero.config.forwardSmashStateNeedsXFlip === true)
 		{
 			piero.config.forwardSmashStateNeedsXFlip = false;
@@ -80,5 +84,21 @@ function pieroForwardSmash(piero, gamepad)
 	{
 		piero.config.forwardSmashEnd = true;
 		pieroReleaseForwardSmash(piero, gamepad);
+	}
+	else if (piero.config.forwardSmashDmgRelease === true)
+	{
+		let tick = piero.config.forwardSmashHitTicks >= piero.config.forwardSmashHitBoxConfig.length ? piero.config.forwardSmashHitBoxConfig.length -1 : piero.config.forwardSmashHitTicks;
+		let hitboxConfig = {
+			'name'				: 'forwardSmashHitTicks' + piero.config.forwardSmashHitTicks,
+			'logicMarkers'		: {'type' : 'dmg'},
+			'offX'				: piero.config.forwardSmashStateNeedsXFlip === true ? piero.config.forwardSmashHitBoxConfig[tick].x * -1 : piero.config.forwardSmashHitBoxConfig[tick].x,
+			'offY'				: piero.config.forwardSmashHitBoxConfig[tick].y,
+			'width'				: piero.config.forwardSmashHitBoxConfig[tick].size.x,
+			'height'			: piero.config.forwardSmashHitBoxConfig[tick].size.y
+		};
+
+		piero.removeHitbox('forwardSmashHitTicks' + (piero.config.forwardSmashHitTicks - 1));
+		piero.addHitbox('body', hitboxConfig);
+		piero.config.forwardSmashHitTicks++;
 	}
 }

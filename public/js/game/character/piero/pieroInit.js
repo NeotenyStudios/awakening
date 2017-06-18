@@ -6,20 +6,20 @@
 /*   By: anonymous <anonymous@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:17:36 by anonymous         #+#    #+#             */
-/*   Updated: 2017/06/16 19:18:00 by anonymous        ###   ########.fr       */
+/*   Updated: 2017/06/18 21:43:25 by anonymous        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 function initPiero(engine, gamepad) {
 	let piero = new PlayableCharacter(engine);
 
+	//JUMPING
 	piero.config.ticksSinceGroundJump = 0;
 	piero.config.fJumpTable = [
 		1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 		0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6,
 		0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2,
 	];
-	//JUMPING
 	piero.config.falling						= false;
 	piero.config.finishedFirstJump				= false;
 	piero.config.canSecondJump					= true;
@@ -38,6 +38,7 @@ function initPiero(engine, gamepad) {
 	piero.config.upSmashCharge					= 0;
 
 	//FORWARD SMASH
+	piero.config.forwardSmashDmgRelease			= false;
 	piero.config.isForwardSmashing				= false;
 	piero.config.forwardSmash0					= false;
 	piero.config.forwardSmash1					= false;
@@ -47,10 +48,22 @@ function initPiero(engine, gamepad) {
 	piero.config.forwardSmashTimeStart			= 0;
 	piero.config.forwardSmashCharge				= 0;
 	piero.config.forwardSmashStateNeedsXFlip	= false;
+	piero.config.forwardSmashHitTicks			= 0;
+	piero.config.forwardSmashHitBoxConfig		= [
+		{x : 20, y : 0, size : {x : 25, y : 20}},
+		{x : 30, y : 0, size : {x : 25, y : 20}},
+		{x : 35, y : 0, size : {x : 25, y : 20}},
+		{x : 40, y : 0, size : {x : 25, y : 20}},
+		{x : 45, y : 0, size : {x : 25, y : 20}},
+		{x : 50, y : 0, size : {x : 25, y : 20}},
+		{x : 55, y : 0, size : {x : 25, y : 20}},
+		{x : 60, y : 0, size : {x : 25, y : 20}},
+	];
 
 	//DOWNSMASH
 	piero.config.isDownSmashing = false;
 
+	//ANIMATIONS INITIALISATIONS
 	piero.bindNewObject('body', {
 		'name'		: 'pieroBody' + new Date().getTime(),
 		'posX'		: (1920 - 1000) / 2,
@@ -234,6 +247,8 @@ function initPiero(engine, gamepad) {
 			{x : 0, y : 0},
 		]
 	);
+
+	//SPEED CONFIGURATIONS
 	piero.boundObjects.body.states.walk.setFrameDuration(100);
 	piero.boundObjects.body.states.run.setFrameDuration(100);
 	piero.boundObjects.body.states.upSmash0.setDuration(300);
@@ -243,7 +258,15 @@ function initPiero(engine, gamepad) {
 	piero.boundObjects.body.states.forwardSmash1.setFrameDuration(75);
 	piero.boundObjects.body.states.forwardSmash2.setDuration(500);
 	piero.boundObjects.body.states.crouch.setDuration(250);
+
+	//RIGIDBODY & HITBOX FOR BODY
 	piero.boundObjects.body.addRigidBody({'gravity' : true});
+	piero.addHitbox('body', {
+		'name'			: 'body',
+		'logicMarkers'	: {'type' : 'PlayableCharacter'}
+	});
+
+	//MISC
 	piero.swapAnimationState('idle', 'body');
 	piero.bindGamepad(piero.findGamepad());
 	piero.config.lastTickGamepad = piero.boundGamepad;
