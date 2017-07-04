@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:22:21 by anonymous         #+#    #+#             */
-/*   Updated: 2017/07/04 19:00:07 by mgras            ###   ########.fr       */
+/*   Updated: 2017/07/04 21:48:26 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,14 +32,17 @@ function pieroReleaseUpSmash(piero, gamepad) {
 		piero.config.upSmashCharge		= 0;
 		piero.config.upSmashHitTicks	= 0;
 		piero.config.holdingUpSmash		= false;
+		piero.config.canInputDirection	= true;
+		piero.config.canInputJump		= true;
 	});
 }
 
-function pieroUpSmash(piero, gamepad) 
+function pieroUpSmash(piero, gamepad)
 {
 	if (gamepad.cStick.yAxis < -gamepad.cStick.deadZone && piero.config.upSmashEnd === false)
 	{
-		console.log(piero.config.canInputAttacks)
+		piero.config.canInputDirection = false;
+		piero.config.canInputJump = false;
 		if (piero.config.holdingUpSmash === true)
 		{
 			piero.config.upSmashCharge = new Date().getTime() - piero.config.upSmashTimeStart;

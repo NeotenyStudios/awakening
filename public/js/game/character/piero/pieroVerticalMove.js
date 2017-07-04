@@ -6,12 +6,26 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:37:04 by anonymous         #+#    #+#             */
-/*   Updated: 2017/07/04 20:06:35 by mgras            ###   ########.fr       */
+/*   Updated: 2017/07/04 22:04:08 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+function pieroFastFall(piero, gamepad) {
+	if (piero.config.isFastFalling === true)
+		piero.boundObjects.body.setSpeed(piero.boundObjects.body.rigidBody.velocity.x, 15);
+	if (gamepad.moveStick.yAxis < -gamepad.moveStick.deadZone &&
+		piero.boundObjects.body.rigidBody.collide.bot === false &&
+		piero.boundObjects.body.rigidBody.velocity.y > 0)
+	{
+		piero.boundObjects.body.setSpeed(piero.boundObjects.body.rigidBody.velocity.x, 15);
+		piero.boundObjects.isFastFalling = true;
+	}
+	if (piero.boundObjects.body.rigidBody.collide.bot === true)
+		piero.config.isFastFalling = false;
+}
+
 function pieroCrouch(piero, gamepad) {
-	if (gamepad.moveStick.yAxis < -gamepad.moveStick.deadZone)
+	if (gamepad.moveStick.yAxis < -gamepad.moveStick.deadZone && piero.boundObjects.body.rigidBody.collide.bot === true)
 	{
 		piero.config.canInputDirection = false;
 		if (piero.config.isCrouching === false)

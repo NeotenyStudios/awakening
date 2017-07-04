@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:21:52 by anonymous         #+#    #+#             */
-/*   Updated: 2017/07/04 19:01:09 by mgras            ###   ########.fr       */
+/*   Updated: 2017/07/04 21:50:28 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,8 @@ function pieroReleaseForwardSmash(piero, gamepad) {
 			piero.boundObjects.body.states.forwardSmash2.flipX();
 			piero.boundObjects.body.states.forwardSmashHold.flipX();
 		}
+		piero.config.canInputDirection = true;
+		piero.config.canInputJump = true;
 	});
 }
 
@@ -44,6 +46,8 @@ function pieroForwardSmash(piero, gamepad)
 {
 	if (Math.abs(gamepad.cStick.xAxis) > gamepad.cStick.deadZone && piero.config.forwardSmashEnd === false)
 	{
+		piero.config.canInputDirection = false;
+		piero.config.canInputJump = false;
 		if (piero.config.holdingForwardSmash === true)
 		{
 			piero.swapAnimationState('forwardSmashHold', 'body');

@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:17:36 by anonymous         #+#    #+#             */
-/*   Updated: 2017/07/04 20:05:59 by mgras            ###   ########.fr       */
+/*   Updated: 2017/07/04 22:02:43 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,13 @@ function pieroConfig(engine, gamepad, piero) {
 		0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2,
 	];
 	piero.config.falling						= false;
+	piero.config.isFastFalling					= false;
 	piero.config.finishedFirstJump				= false;
 	piero.config.canSecondJump					= true;
 	piero.config.isCrouching					= false;
 	piero.config.orientation					= 1;
 	piero.config.canInputDirection				= true
+	piero.config.canInputJump					= true;
 
 	//GENERAL RESTRICTION
 	piero.config.canInputAttacks				= true;
@@ -87,7 +89,7 @@ function initPiero(engine, gamepad) {
 	//RIGIDBODY INITIALISATION
 	piero.bindNewObject('body', {
 		'name'		: 'pieroBody' + new Date().getTime(),
-		'posX'		: (1920 - 1000) / 2,
+		'posX'		: (1920 - 1000) / 2 + 500,
 		'posY'		: 0,
 		'width'		: 90,
 		'height'	: 90,
@@ -314,12 +316,16 @@ function initPiero(engine, gamepad) {
 }
 
 function pieroControls(gamepad, piero) {
-	//cameraControls(gamepad);
+	/*cameraControls(gamepad);*/
 	pieroXAxisMovement(piero, gamepad);
-	pieroFirstJump(piero, gamepad);
-	pieroSecondJump(piero, gamepad);
+	if (piero.config.canInputJump === true)
+	{
+		pieroFirstJump(piero, gamepad);
+		pieroSecondJump(piero, gamepad);
+	}
 	pieroUpSmash(piero, gamepad);
 	pieroForwardSmash(piero, gamepad);
 	pieroCrouch(piero, gamepad);
+	pieroFastFall(piero, gamepad);
 	piero.config.lastTickGamepad = piero.boundGamepad;
 }
