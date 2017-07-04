@@ -3,25 +3,29 @@
 /*                                                        :::      ::::::::   */
 /*   pieroHorizontalMove.js                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anonymous <anonymous@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:36:49 by anonymous         #+#    #+#             */
-/*   Updated: 2017/06/16 16:16:28 by anonymous        ###   ########.fr       */
+/*   Updated: 2017/07/04 20:14:17 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-function pieroCrouch(piero, gamepad) {
-}
-
 function pieroXAxisMovement(piero, gamepad) {
-	if (Math.abs(gamepad.moveStick.xAxis) > gamepad.moveStick.deadZone)
+	if (Math.abs(gamepad.moveStick.xAxis) > gamepad.moveStick.deadZone && piero.config.canInputDirection === true)
 	{
 		piero.swapAnimationState('run', 'body');
 		piero.boundObjects.body.setSpeed(gamepad.moveStick.xAxis * 10, piero.boundObjects.body.rigidBody.velocity.y);
+		piero.clearAnimationQueue('body');
 		if (gamepad.moveStick.xAxis > 0)
+		{
+			piero.config.orientation = 1;
 			piero.boundObjects.body.states.run.reverse.x = false;
+		}
 		else
+		{
+			piero.config.orientation = -1;
 			piero.boundObjects.body.states.run.reverse.x = true;
+		}
 	}
 	else
 	{
@@ -29,7 +33,10 @@ function pieroXAxisMovement(piero, gamepad) {
 			Math.abs(piero.boundObjects.body.rigidBody.velocity.x) > 3 ? piero.boundObjects.body.rigidBody.velocity.x * 0.9 : 0,
 			piero.boundObjects.body.rigidBody.velocity.y
 		);
-		//IDLE CONFLICTS WITH OTHER ANIMATIONS SINCE IT GOES BACK TO DEFAULT ONCE ALL INPUTS ARE RELEASED
-		//piero.swapAnimationState('idle', 'body');
+		if (piero.config.orientation === 1)
+			piero.boundObjects.body.states.idle.reverse.x = false;
+		else
+			piero.boundObjects.body.states.idle.reverse.x = true;
+		piero.swapAnimationState('idle', 'body');
 	}
 }

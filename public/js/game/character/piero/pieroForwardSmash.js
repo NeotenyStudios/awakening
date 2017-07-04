@@ -3,23 +3,25 @@
 /*                                                        :::      ::::::::   */
 /*   pieroForwardSmash.js                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anonymous <anonymous@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:21:52 by anonymous         #+#    #+#             */
-/*   Updated: 2017/06/18 21:52:01 by anonymous        ###   ########.fr       */
+/*   Updated: 2017/07/04 19:01:09 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 function pieroReleaseForwardSmash(piero, gamepad) {
+	if (piero.config.holdingForwardSmash === true)
+		piero.config.forwardSmashDmgRelease = true;
 	piero.config.holdingForwardSmash = false;
-	piero.config.forwardSmashDmgRelease = true;
 	piero.appendAnimationToObjectQueue('body', 'forwardSmash1', function(contextedObject) {
 		console.log('forwardSmash1 END');
 		piero.config.forwardSmashDmgRelease = false;
+		piero.removeHitbox('forwardSmashHitTicks' + (piero.config.forwardSmashHitTicks - 1));
 	});
 	piero.appendAnimationToObjectQueue('body', 'forwardSmash2', function(contextedObject) {
-		piero.config.forwardSmashHitTicks = 0;
 		console.log('forwardSmash2 END');
+		piero.config.forwardSmashHitTicks = 0;
 		piero.config.canInputAttacks = true;
 		piero.config.isForwardSmashing = false;
 		piero.config.forwardSmash0 = false;
@@ -75,6 +77,7 @@ function pieroForwardSmash(piero, gamepad)
 			piero.config.isForwardSmashing = true;
 			piero.appendAnimationToObjectQueue('body', 'forwardSmash0', function(contextedObject) {
 				console.log('forwardSmash0 END');
+				piero.config.forwardSmashDmgRelease = true;
 				piero.config.forwardSmash1 = true;
 			});
 			pieroReleaseForwardSmash(piero, gamepad);
@@ -97,6 +100,10 @@ function pieroForwardSmash(piero, gamepad)
 			'height'			: piero.config.forwardSmashHitBoxConfig[tick].size.y
 		};
 
+		if (piero.config.forwardSmashStateNeedsXFlip === false)
+			hitboxConfig.offX += piero.boundObjects.body.size.x;
+		else
+			hitboxConfig.offX -= hitboxConfig.width;
 		piero.removeHitbox('forwardSmashHitTicks' + (piero.config.forwardSmashHitTicks - 1));
 		piero.addHitbox('body', hitboxConfig);
 		piero.config.forwardSmashHitTicks++;

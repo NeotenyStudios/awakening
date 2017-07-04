@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   pieroInit.js                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anonymous <anonymous@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:17:36 by anonymous         #+#    #+#             */
-/*   Updated: 2017/06/18 21:43:25 by anonymous        ###   ########.fr       */
+/*   Updated: 2017/07/04 20:05:59 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-function initPiero(engine, gamepad) {
-	let piero = new PlayableCharacter(engine);
-
+function pieroConfig(engine, gamepad, piero) {
 	//JUMPING
 	piero.config.ticksSinceGroundJump = 0;
 	piero.config.fJumpTable = [
@@ -23,6 +21,9 @@ function initPiero(engine, gamepad) {
 	piero.config.falling						= false;
 	piero.config.finishedFirstJump				= false;
 	piero.config.canSecondJump					= true;
+	piero.config.isCrouching					= false;
+	piero.config.orientation					= 1;
+	piero.config.canInputDirection				= true
 
 	//GENERAL RESTRICTION
 	piero.config.canInputAttacks				= true;
@@ -36,6 +37,8 @@ function initPiero(engine, gamepad) {
 	piero.config.upSmashEnd						= false;
 	piero.config.upSmashTimeStart				= 0;
 	piero.config.upSmashCharge					= 0;
+	piero.config.upSmashHitTicks				= 0;
+	piero.config.upSmashDmgRelease				= false;
 
 	//FORWARD SMASH
 	piero.config.forwardSmashDmgRelease			= false;
@@ -50,20 +53,38 @@ function initPiero(engine, gamepad) {
 	piero.config.forwardSmashStateNeedsXFlip	= false;
 	piero.config.forwardSmashHitTicks			= 0;
 	piero.config.forwardSmashHitBoxConfig		= [
-		{x : 20, y : 0, size : {x : 25, y : 20}},
-		{x : 30, y : 0, size : {x : 25, y : 20}},
-		{x : 35, y : 0, size : {x : 25, y : 20}},
-		{x : 40, y : 0, size : {x : 25, y : 20}},
-		{x : 45, y : 0, size : {x : 25, y : 20}},
-		{x : 50, y : 0, size : {x : 25, y : 20}},
-		{x : 55, y : 0, size : {x : 25, y : 20}},
-		{x : 60, y : 0, size : {x : 25, y : 20}},
+		{x : -60, y : 10, size : {x : 20, y : 20}},
+		{x : -55, y : 10, size : {x : 20, y : 25}},
+		{x : -50, y : 10, size : {x : 25, y : 25}},
+		{x : -45, y : 10, size : {x : 25, y : 30}},
+		{x : -40, y : 10, size : {x : 30, y : 30}},
+		{x : -35, y : 10, size : {x : 35, y : 30}},
+		{x : -30, y : 10, size : {x : 35, y : 35}},
+		{x : -20, y : 10, size : {x : 35, y : 40}},
+		{x : -18, y : 10, size : {x : 40, y : 40}},
+		{x : -15, y : 10, size : {x : 45, y : 40}},
+		{x : -13, y : 10, size : {x : 45, y : 45}},
+		{x : -12, y : 10, size : {x : 50, y : 50}},
+	];
+	piero.config.upSmashHitBoxConfig			= [
+		{x : (piero.boundObjects.body.size.x / 2) - 25, y : 000, size : {x : 50, y : 50}},
+		{x : (piero.boundObjects.body.size.x / 2) - 25, y : -10, size : {x : 50, y : 50}},
+		{x : (piero.boundObjects.body.size.x / 2) - 25, y : -15, size : {x : 50, y : 50}},
+		{x : (piero.boundObjects.body.size.x / 2) - 25, y : -20, size : {x : 50, y : 50}},
+		{x : (piero.boundObjects.body.size.x / 2) - 25, y : -25, size : {x : 50, y : 50}},
+		{x : (piero.boundObjects.body.size.x / 2) - 25, y : -30, size : {x : 50, y : 50}},
+		{x : (piero.boundObjects.body.size.x / 2) - 25, y : -35, size : {x : 50, y : 50}},
+		{x : (piero.boundObjects.body.size.x / 2) - 25, y : -40, size : {x : 50, y : 50}},
 	];
 
 	//DOWNSMASH
 	piero.config.isDownSmashing = false;
+}
 
-	//ANIMATIONS INITIALISATIONS
+function initPiero(engine, gamepad) {
+	let piero = new PlayableCharacter(engine);
+
+	//RIGIDBODY INITIALISATION
 	piero.bindNewObject('body', {
 		'name'		: 'pieroBody' + new Date().getTime(),
 		'posX'		: (1920 - 1000) / 2,
@@ -72,6 +93,8 @@ function initPiero(engine, gamepad) {
 		'height'	: 90,
 		'engine'	: engine
 	});
+
+	//ANIMATION INITIALISATION
 	piero.boundObjects.body.addAnimationState('walk',
 		[
 			'/chars/piero/walk/1.png',
@@ -235,7 +258,20 @@ function initPiero(engine, gamepad) {
 		],
 	);
 	piero.boundObjects.body.addAnimationState('forwardSmashHold', ['/chars/piero/forwardSmash/4.5.png'], [{x : 0, y : 0}]);
-	piero.boundObjects.body.addAnimationState('crouch',
+	piero.boundObjects.body.addAnimationState('crouchUp',
+		[
+			'/chars/piero/crouching/2.png',
+			'/chars/piero/crouching/1.png',
+			'/chars/piero/crouching/0.png',
+		],
+		[
+			{x : 0, y : 0},
+			{x : 0, y : 0},
+			{x : 0, y : 0},
+		]
+	);
+	piero.boundObjects.body.addAnimationState('crouchIdle', ['/chars/piero/crouching/2.png'], [{x : 0, y : 0}]);
+	piero.boundObjects.body.addAnimationState('crouchDown',
 		[
 			'/chars/piero/crouching/0.png',
 			'/chars/piero/crouching/1.png',
@@ -248,7 +284,7 @@ function initPiero(engine, gamepad) {
 		]
 	);
 
-	//SPEED CONFIGURATIONS
+	//ANIMATION SPEED CONFIGURATIONS
 	piero.boundObjects.body.states.walk.setFrameDuration(100);
 	piero.boundObjects.body.states.run.setFrameDuration(100);
 	piero.boundObjects.body.states.upSmash0.setDuration(300);
@@ -257,7 +293,8 @@ function initPiero(engine, gamepad) {
 	piero.boundObjects.body.states.forwardSmash0.setFrameDuration(75);
 	piero.boundObjects.body.states.forwardSmash1.setFrameDuration(75);
 	piero.boundObjects.body.states.forwardSmash2.setDuration(500);
-	piero.boundObjects.body.states.crouch.setDuration(250);
+	piero.boundObjects.body.states.crouchDown.setFrameDuration(100);
+	piero.boundObjects.body.states.crouchUp.setFrameDuration(100);
 
 	//RIGIDBODY & HITBOX FOR BODY
 	piero.boundObjects.body.addRigidBody({'gravity' : true});
@@ -272,6 +309,7 @@ function initPiero(engine, gamepad) {
 	piero.config.lastTickGamepad = piero.boundGamepad;
 	if (piero.boundGamepad !== null && piero.boundGamepad !== undefined)
 		piero.boundGamepad.setHandler(pieroControls, piero);
+	pieroConfig(engine, gamepad, piero);
 	return (piero);
 }
 
@@ -282,6 +320,6 @@ function pieroControls(gamepad, piero) {
 	pieroSecondJump(piero, gamepad);
 	pieroUpSmash(piero, gamepad);
 	pieroForwardSmash(piero, gamepad);
-	pieroCrouch();
+	pieroCrouch(piero, gamepad);
 	piero.config.lastTickGamepad = piero.boundGamepad;
 }
