@@ -6,14 +6,14 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:17:36 by anonymous         #+#    #+#             */
-/*   Updated: 2017/07/04 22:02:43 by mgras            ###   ########.fr       */
+/*   Updated: 2017/07/06 17:27:20 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 function pieroConfig(engine, gamepad, piero) {
 	//JUMPING
-	piero.config.ticksSinceGroundJump = 0;
-	piero.config.fJumpTable = [
+	piero.config.ticksSinceGroundJump			= 0;
+	piero.config.fJumpTable						= [
 		1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 		0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6, 0.6,
 		0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.2, 0.2, 0.2,
@@ -31,6 +31,11 @@ function pieroConfig(engine, gamepad, piero) {
 	piero.config.canInputAttacks				= true;
 	
 	//UP SMASH
+	piero.config.upSmashHitMarkerTable			= [];
+	piero.config.upSmashBaseDmg					= 20;
+	piero.config.upSmashDmgScaling				= 0.03;
+	piero.config.upSmashBaseKnockBack			= 10;
+	piero.config.upSmashKnockBackScaling		= 0.3;
 	piero.config.isUpSmashing					= false;
 	piero.config.upSmash0						= false;
 	piero.config.upSmash1						= false;
@@ -43,6 +48,11 @@ function pieroConfig(engine, gamepad, piero) {
 	piero.config.upSmashDmgRelease				= false;
 
 	//FORWARD SMASH
+	piero.config.forwardSmashHitMarkerTable		= [];
+	piero.config.forwardSmashBaseDmg			= 20;
+	piero.config.forwardSmashDmgScaling			= 0.03;
+	piero.config.forwardSmashBaseKnockBack		= 10;
+	piero.config.forwardSmashKnockBackScaling	= 0.3;
 	piero.config.forwardSmashDmgRelease			= false;
 	piero.config.isForwardSmashing				= false;
 	piero.config.forwardSmash0					= false;
@@ -80,7 +90,18 @@ function pieroConfig(engine, gamepad, piero) {
 	];
 
 	//DOWNSMASH
-	piero.config.isDownSmashing = false;
+	piero.config.isDownSmashing					= false;
+
+	//OUTSIDE LOGIC MARKERS
+	piero.config.canBeDisplaced 				= true;
+	piero.config.canGetDamaged					= true;
+	piero.config.canGetImpared					= true;
+	piero.config.canBeDisplacedTimer			= 0;
+	piero.config.canGetImparedTimer				= 0;
+	piero.config.canGetDamagedTimer				= 0;
+
+	//GUI values
+	piero.config.damageTaken					= 0;
 }
 
 function initPiero(engine, gamepad) {
@@ -298,11 +319,11 @@ function initPiero(engine, gamepad) {
 	piero.boundObjects.body.states.crouchDown.setFrameDuration(100);
 	piero.boundObjects.body.states.crouchUp.setFrameDuration(100);
 
-	//RIGIDBODY & HITBOX FOR BODY
+	//RIGIDBODY & HITBOX FOR BODY OBJECT
 	piero.boundObjects.body.addRigidBody({'gravity' : true});
 	piero.addHitbox('body', {
 		'name'			: 'body',
-		'logicMarkers'	: {'type' : 'PlayableCharacter'}
+		'logicMarkers'	: {'type' : 'playableCharacter', 'parentBundle' : piero}
 	});
 
 	//MISC

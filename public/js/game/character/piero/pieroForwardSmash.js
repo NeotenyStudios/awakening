@@ -6,7 +6,7 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:21:52 by anonymous         #+#    #+#             */
-/*   Updated: 2017/07/04 21:50:28 by mgras            ###   ########.fr       */
+/*   Updated: 2017/07/06 18:15:09 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,39 @@ function pieroReleaseForwardSmash(piero, gamepad) {
 		}
 		piero.config.canInputDirection = true;
 		piero.config.canInputJump = true;
+		piero.config.forwardSmashHitMarkerTable = [];
 	});
 }
 
-function pieroForwardSmash(piero, gamepad) 
-{
+function pieroForwardSmashHitBoxHanler(objectA, objectB, collider, collided) {
+	let piero = collider.logicMarkers.parentBundle;
+	let target;
+	let targetRb;
+
+	if (collided.logicMarkers.type === undefined)
+		return (false);
+	if (collided.logicMarkers.type === 'playableCharacter')
+	{
+		target = collided.logicMarkers.parentBundle
+		targetRb = objectB.rigidBody;
+		if (!target)
+			return (false);
+		else if (piero.config.forwardSmashHitMarkerTable.indexOf(objectB.name) === -1)
+		{
+			if (target.config.canBeDisplaced === true && targetRb)
+			{
+				console.log(piero.config.forwardSmashKnockBackScaling);
+				targetRb.addSpeed(((piero.config.forwardSmashCharge * piero.config.forwardSmashKnockBackScaling) + piero.config.forwardSmashBaseKnockBack) * ((target.config.damageTaken + 10) / 100) * piero.config.orientation, 0);
+				targetRb.setVelocity(targetRb.velocity.x, -5);
+			}
+			if (target.config.canGetDamaged === true && targetRb)
+				target.config.damageTaken += (piero.config.forwardSmashCharge * piero.config.forwardSmashDmgScaling) + piero.config.forwardSmashBaseDmg;
+			piero.config.forwardSmashHitMarkerTable.push(objectB.name);
+		}
+	}
+}
+
+function pieroForwardSmash(piero, gamepad) {
 	if (Math.abs(gamepad.cStick.xAxis) > gamepad.cStick.deadZone && piero.config.forwardSmashEnd === false)
 	{
 		piero.config.canInputDirection = false;
@@ -55,6 +83,7 @@ function pieroForwardSmash(piero, gamepad)
 			if (piero.config.forwardSmashCharge >= 2500)
 			{
 				piero.config.forwardSmashEnd = true;
+				piero.config.forwardSmash0 = false;
 				pieroReleaseForwardSmash(piero, gamepad);
 			}
 		}
@@ -76,6 +105,7 @@ function pieroForwardSmash(piero, gamepad)
 				piero.boundObjects.body.states.forwardSmash2.flipX();
 				piero.boundObjects.body.states.forwardSmashHold.flipX();
 				piero.config.forwardSmashStateNeedsXFlip = true;
+				piero.config.orientation = -1;
 			}
 			piero.config.canInputAttacks = false;
 			piero.config.isForwardSmashing = true;
@@ -97,11 +127,12 @@ function pieroForwardSmash(piero, gamepad)
 		let tick = piero.config.forwardSmashHitTicks >= piero.config.forwardSmashHitBoxConfig.length ? piero.config.forwardSmashHitBoxConfig.length -1 : piero.config.forwardSmashHitTicks;
 		let hitboxConfig = {
 			'name'				: 'forwardSmashHitTicks' + piero.config.forwardSmashHitTicks,
-			'logicMarkers'		: {'type' : 'dmg'},
+			'logicMarkers'		: {'type' : 'dmg', 'parentBundle' : piero},
 			'offX'				: piero.config.forwardSmashStateNeedsXFlip === true ? piero.config.forwardSmashHitBoxConfig[tick].x * -1 : piero.config.forwardSmashHitBoxConfig[tick].x,
 			'offY'				: piero.config.forwardSmashHitBoxConfig[tick].y,
 			'width'				: piero.config.forwardSmashHitBoxConfig[tick].size.x,
-			'height'			: piero.config.forwardSmashHitBoxConfig[tick].size.y
+			'height'			: piero.config.forwardSmashHitBoxConfig[tick].size.y,
+			'handler'			: pieroForwardSmashHitBoxHanler
 		};
 
 		if (piero.config.forwardSmashStateNeedsXFlip === false)
