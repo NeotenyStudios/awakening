@@ -23,7 +23,7 @@ const	guidGen			= require('./serv/guidGen');
 const	sessionHandling	= require('./serv/sessionHandling');
 const	signup			= require('./serv/profileAPI/signup');
 const	signin			= require('./serv/profileAPI/signin');
-const	noLogFiles		= ['controllerLogin.js', 'design.css', 'formVerif.js'];
+const	noLogFiles		= ['controllerLogin.js', 'design.css', 'formVerif.js', 'meme.mp4'];
 let		liveSessions	= [];
 
 const server			= http.createServer((req, res) => {

@@ -6,9 +6,11 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:21:52 by anonymous         #+#    #+#             */
-/*   Updated: 2017/07/06 18:15:09 by mgras            ###   ########.fr       */
+/*   Updated: 2017/10/13 15:08:23 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+'use strict';
 
 function pieroReleaseForwardSmash(piero, gamepad) {
 	if (piero.config.holdingForwardSmash === true)
@@ -29,6 +31,7 @@ function pieroReleaseForwardSmash(piero, gamepad) {
 		piero.config.forwardSmash2 = false;
 		piero.config.forwardSmashEnd = false;
 		piero.config.forwardSmashDmgRelease = false;
+		piero.config.canCrouch = true;
 		if (piero.config.forwardSmashStateNeedsXFlip === true)
 		{
 			piero.config.forwardSmashStateNeedsXFlip = false;
@@ -60,8 +63,9 @@ function pieroForwardSmashHitBoxHanler(objectA, objectB, collider, collided) {
 		{
 			if (target.config.canBeDisplaced === true && targetRb)
 			{
-				console.log(piero.config.forwardSmashKnockBackScaling);
-				targetRb.addSpeed(((piero.config.forwardSmashCharge * piero.config.forwardSmashKnockBackScaling) + piero.config.forwardSmashBaseKnockBack) * ((target.config.damageTaken + 10) / 100) * piero.config.orientation, 0);
+				console.log(piero.config.forwardSmashCharge * piero.config.forwardSmashKnockBackScaling);
+				console.log(piero.config.forwardSmashBaseKnockBack + target.config.damageTaken)
+				targetRb.addSpeed(((piero.config.forwardSmashCharge * piero.config.forwardSmashKnockBackScaling) + (piero.config.forwardSmashBaseKnockBack + (target.config.damageTaken / 100))) * piero.config.orientation, 0);
 				targetRb.setVelocity(targetRb.velocity.x, -5);
 			}
 			if (target.config.canGetDamaged === true && targetRb)
@@ -80,7 +84,7 @@ function pieroForwardSmash(piero, gamepad) {
 		{
 			piero.swapAnimationState('forwardSmashHold', 'body');
 			piero.config.forwardSmashCharge = new Date().getTime() - piero.config.forwardSmashTimeStart;
-			if (piero.config.forwardSmashCharge >= 2500)
+			if (piero.config.forwardSmashCharge >= 1500)
 			{
 				piero.config.forwardSmashEnd = true;
 				piero.config.forwardSmash0 = false;
@@ -107,7 +111,10 @@ function pieroForwardSmash(piero, gamepad) {
 				piero.config.forwardSmashStateNeedsXFlip = true;
 				piero.config.orientation = -1;
 			}
+			else
+				piero.config.orientation = 1;
 			piero.config.canInputAttacks = false;
+			piero.config.canCrouch = false;
 			piero.config.isForwardSmashing = true;
 			piero.appendAnimationToObjectQueue('body', 'forwardSmash0', function(contextedObject) {
 				console.log('forwardSmash0 END');

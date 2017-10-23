@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   inGame.js                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: anonymous <anonymous@student.42.fr>        +#+  +:+       +#+        */
+/*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/16 07:39:25 by mgras             #+#    #+#             */
-/*   Updated: 2017/06/16 19:31:53 by anonymous        ###   ########.fr       */
+/*   Updated: 2017/10/13 14:58:18 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,21 +40,65 @@ function cameraControls(gamepad) {
 }
 
 function createDefaultStage(engine) {
-	let topKillBox	= engine.buildObject({'name' : 'topKillBox', 'engine' : engine, 'posX' : 0, 'posY' : -50});
+	let topKillBox	= engine.buildObject({'name' : 'topKillBox', 'engine' : engine, 'posX' : 0, 'posY' : -51});
 	topKillBox.setSize(engine.width, 75);
-	topKillBox.addHitBox({'name' : 'topKillBox'});
+	topKillBox.addHitBox({'name' : 'kill'});
+	topKillBox.addHandlerToHitBox('kill', function(objectA, objectB, collider, collided) {
+		if (collided.logicMarkers.type === undefined)
+			return (false);
+		if (collided.logicMarkers.type === 'playableCharacter')
+		{
+			objectB.setPosition((1920 - 1000) / 2 + 500, 150);
+			objectB.rigidBody.setVelocity(0, 0);
+			console.log(collided.logicMarkers.parentBundle.damageTaken);
+			collided.logicMarkers.parentBundle.damageTaken = 0;
+		}
+	});
 
-	let bottomKillBox	= engine.buildObject({'name' : 'bottomKillBox', 'engine' : engine, 'posX' : 0, 'posY' : engine.height - 25});
+	let bottomKillBox	= engine.buildObject({'name' : 'bottomKillBox', 'engine' : engine, 'posX' : 0, 'posY' : engine.height - 24});
 	bottomKillBox.setSize(engine.width, 75);
-	bottomKillBox.addHitBox({'name' : 'bottomKillBox'});
+	bottomKillBox.addHitBox({'name' : 'kill'});
+	bottomKillBox.addHandlerToHitBox('kill', function(objectA, objectB, collider, collided) {
+		if (collided.logicMarkers.type === undefined)
+			return (false);
+		if (collided.logicMarkers.type === 'playableCharacter')
+		{
+			objectB.setPosition((1920 - 1000) / 2 + 500, 150);
+			objectB.rigidBody.setVelocity(0, 0);
+			console.log(collided.logicMarkers.parentBundle.damageTaken);
+			collided.logicMarkers.parentBundle.damageTaken = 0;
+		}
+	});
 
 	let leftKillBox	= engine.buildObject({'name' : 'leftKillBox', 'engine' : engine, 'posX' : -50, 'posY' : 25});
 	leftKillBox.setSize(75, engine.height - 50);
-	leftKillBox.addHitBox({'name' : 'leftKillBox'});
+	leftKillBox.addHitBox({'name' : 'kill'});
+	leftKillBox.addHandlerToHitBox('kill', function(objectA, objectB, collider, collided) {
+		if (collided.logicMarkers.type === undefined)
+			return (false);
+		if (collided.logicMarkers.type === 'playableCharacter')
+		{
+			objectB.setPosition((1920 - 1000) / 2 + 500, 150);
+			objectB.rigidBody.setVelocity(0, 0);
+			console.log(collided.logicMarkers.parentBundle.damageTaken);
+			collided.logicMarkers.parentBundle.damageTaken = 0;
+		}
+	});
 
 	let rightKillBox	= engine.buildObject({'name' : 'rightKillBox', 'engine' : engine, 'posX' : engine.width - 25, 'posY' : 25});
 	rightKillBox.setSize(75, engine.height - 50);
-	rightKillBox.addHitBox({'name' : 'rightKillBox'});
+	rightKillBox.addHitBox({'name' : 'kill'});
+	rightKillBox.addHandlerToHitBox('kill', function(objectA, objectB, collider, collided) {
+		if (collided.logicMarkers.type === undefined)
+			return (false);
+		if (collided.logicMarkers.type === 'playableCharacter')
+		{
+			objectB.setPosition((1920 - 1000) / 2 + 500, 150);
+			objectB.rigidBody.setVelocity(0, 0);
+			console.log(collided.logicMarkers.parentBundle.damageTaken);
+			collided.logicMarkers.parentBundle.damageTaken = 0;
+		}
+	});
 
 	let stage		= engine.buildObject({
 		'name'		: 'stage',

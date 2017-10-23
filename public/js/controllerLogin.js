@@ -6,9 +6,11 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/27 17:25:22 by mgras             #+#    #+#             */
-/*   Updated: 2017/04/03 15:27:00 by mgras            ###   ########.fr       */
+/*   Updated: 2017/08/31 11:05:19 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+'use strict';
 
 jQuery('document').ready(() => {
 	const signupErrorDiv = $('#upError');

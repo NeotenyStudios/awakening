@@ -64,6 +64,39 @@ ex['.css'] = function(req, res){
 	});
 }
 
+/*
+ex['.mp4'] = function(req, res){
+	const file = path.resolve('./public/medias/mp4' + path.dirname(req.url) + '/' + path.basename(req.url));
+	let range;
+	let position;
+	let start;
+	let total;
+	let end;
+	let chunksize;
+	let stream;
+
+	fs.stat(file, function(err, stats){
+		if (err)
+			res.end('Your file was not found or an error occured');
+		start = 0;
+		total = stats.size;
+		end = total  - 1;
+		chunksize = (end - start) + 1;
+		res.writeHead(206, {
+			"Content-Range": "bytes " + start + "-" + end + "/" + total,
+			"Accept-Ranges": "bytes",
+			"Content-Length": chunksize,
+			"Content-Type": "video/mp4"
+		});
+		stream = fs.createReadStream(file, {start : start, end : end}).on("open", function(){
+			stream.pipe(res);
+		}).on("eror", function(err) {
+			res.end(err);
+		});
+	});
+}
+*/
+
 ex['.html'] = function(req, res){
 	fs.readFile('./public/html' + path.dirname(req.url) + '/' + path.basename(req.url), 'utf-8', (err, content) => {
 		if (err !== null)

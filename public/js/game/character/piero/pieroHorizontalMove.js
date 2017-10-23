@@ -6,9 +6,11 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:36:49 by anonymous         #+#    #+#             */
-/*   Updated: 2017/07/04 20:14:17 by mgras            ###   ########.fr       */
+/*   Updated: 2017/08/31 11:05:45 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+'use strict';
 
 function pieroXAxisMovement(piero, gamepad) {
 	if (Math.abs(gamepad.moveStick.xAxis) > gamepad.moveStick.deadZone && piero.config.canInputDirection === true)

@@ -6,9 +6,11 @@
 /*   By: mgras <mgras@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/16 15:22:21 by anonymous         #+#    #+#             */
-/*   Updated: 2017/07/06 18:15:10 by mgras            ###   ########.fr       */
+/*   Updated: 2017/10/13 14:54:17 by mgras            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+'use strict';
 
 function pieroUpSmashHitBoxHanler(objectA, objectB, collider, collided) {
 	let piero = collider.logicMarkers.parentBundle;
@@ -27,7 +29,9 @@ function pieroUpSmashHitBoxHanler(objectA, objectB, collider, collided) {
 		{
 			if (target.config.canBeDisplaced === true && targetRb)
 			{
-				targetRb.addSpeed(0, ((piero.config.upSmashCharge * piero.config.upSmashKnockBackScaling) + piero.config.upSmashBaseKnockBack) * ((target.config.damageTaken + 10) / 100));
+				console.log(piero.config.upSmashCharge * piero.config.upSmashKnockBackScaling);
+				//targetRb.addSpeed(0, ((piero.config.upSmashCharge * piero.config.upSmashKnockBackScaling) + piero.config.upSmashBaseKnockBack) + ((target.config.damageTaken + 10) / 100));
+				targetRb.addSpeed(0, - ((piero.config.upSmashCharge * piero.config.upSmashKnockBackScaling) + piero.config.upSmashBaseKnockBack + (target.config.damageTaken / 100)));
 				targetRb.setVelocity(0, targetRb.velocity.y);
 			}
 			if (target.config.canGetDamaged === true && targetRb)
@@ -41,7 +45,6 @@ function pieroReleaseUpSmash(piero, gamepad) {
 	if (piero.config.holdingUpSmash === true)
 		piero.config.upSmashDmgRelease = true;
 	piero.config.holdingUpSmash = false;
-	console.log(piero);
 	piero.appendAnimationToObjectQueue('body', 'upSmash1', function(contextedObject) {
 		console.log('upSmash1 END');
 		piero.config.upSmashEnd = true;
@@ -62,6 +65,7 @@ function pieroReleaseUpSmash(piero, gamepad) {
 		piero.config.holdingUpSmash			= false;
 		piero.config.canInputDirection		= true;
 		piero.config.canInputJump			= true;
+		piero.config.canCrouch				= true;
 		piero.config.upSmashHitMarkerTable	= [];
 	});
 }
@@ -94,6 +98,7 @@ function pieroUpSmash(piero, gamepad)
 		{
 			piero.config.canInputAttacks = false;
 			piero.config.isUpSmashing = true;
+			piero.config.canCrouch = false;
 			piero.appendAnimationToObjectQueue('body', 'upSmash0', function(contextedObject) {
 				piero.config.upSmash0 = true;
 				piero.config.upSmashDmgRelease = true;
@@ -115,7 +120,8 @@ function pieroUpSmash(piero, gamepad)
 			'offX'				: piero.config.upSmashHitBoxConfig[tick].x,
 			'offY'				: piero.config.upSmashHitBoxConfig[tick].y,
 			'width'				: piero.config.upSmashHitBoxConfig[tick].size.x,
-			'height'			: piero.config.upSmashHitBoxConfig[tick].size.y
+			'height'			: piero.config.upSmashHitBoxConfig[tick].size.y,
+			'handler'			: pieroUpSmashHitBoxHanler
 		};
 
 		piero.removeHitbox('upSmashHitTicks' + (piero.config.upSmashHitTicks - 1));
